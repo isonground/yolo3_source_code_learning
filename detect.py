@@ -286,79 +286,127 @@ def run(
 
 
 def parse_opt():
-    """Parses and returns command-line options for running YOLOv3 model detection.
+    """解析并返回运行YOLOv3模型检测所需的命令行参数。
 
-    Args:
-        --weights (list[str]): Model path or Triton URL. Default: ROOT / "yolov3-tiny.pt".
-        --source (str): Input data source like file/dir/URL/glob/screen/0(webcam). Default: ROOT / "data/images".
-        --data (str): Optional path to dataset.yaml. Default: ROOT / "data/coco128.yaml".
-        --imgsz (list[int]): Inference size as height, width. Accepts multiple values. Default: [640].
-        --conf-thres (float): Confidence threshold for predictions. Default: 0.25.
-        --iou-thres (float): IoU threshold for Non-Maximum Suppression (NMS). Default: 0.45.
-        --max-det (int): Maximum number of detections per image. Default: 1000.
-        --device (str): CUDA device identifier, e.g. "0" or "0,1,2,3" or "cpu". Default: "" (auto-select).
-        --view-img (bool): Display results. Default: False.
-        --save-txt (bool): Save results to *.txt files. Default: False.
-        --save-conf (bool): Save confidence scores in text labels. Default: False.
-        --save-crop (bool): Save cropped prediction boxes. Default: False.
-        --nosave (bool): Do not save images/videos. Default: False.
-        --classes (list[int] | None): Filter results by class, e.g. [0, 2, 3]. Default: None.
-        --agnostic-nms (bool): Perform class-agnostic NMS. Default: False.
-        --augment (bool): Apply augmented inference. Default: False.
-        --visualize (bool): Visualize feature maps. Default: False.
-        --update (bool): Update all models. Default: False.
-        --project (str): Directory to save results; results saved to "project/name". Default: ROOT / "runs/detect".
-        --name (str): Name of the specific run; results saved to "project/name". Default: "exp".
-        --exist-ok (bool): Allow results to be saved in an existing directory without incrementing. Default: False.
-        --line-thickness (int): Bounding box line thickness in pixels. Default: 3.
-        --hide-labels (bool): Hide labels on detections. Default: False.
-        --hide-conf (bool): Hide confidence scores on labels. Default: False.
-        --half (bool): Use FP16 half-precision inference. Default: False.
-        --dnn (bool): Use OpenCV DNN backend for ONNX inference. Default: False.
-        --vid-stride (int): Frame-rate stride for video input. Default: 1.
+    参数说明:
+        --weights (list[str]): 模型权重路径或Triton服务器URL。默认值: ROOT / "yolov3-tiny.pt"。
+        --source (str): 输入数据源，支持文件/目录/URL/glob模式/屏幕截图/摄像头(0)。默认值: ROOT / "data/images"。
+        --data (str): 数据集配置文件路径（可选）。默认值: ROOT / "data/coco128.yaml"。
+        --imgsz (list[int]): 推理尺寸，格式为[高度, 宽度]。可接受单个或两个值。默认值: [640]。
+        --conf-thres (float): 预测置信度阈值。默认值: 0.25。
+        --iou-thres (float): 非极大值抑制(NMS)的IoU阈值。默认值: 0.45。
+        --max-det (int): 每张图像的最大检测数量。默认值: 1000。
+        --device (str): CUDA设备标识，如 "0" 或 "0,1,2,3" 或 "cpu"。默认值: ""（自动选择）。
+        --view-img (bool): 是否显示检测结果。默认值: False。
+        --save-txt (bool): 是否将结果保存到*.txt文件。默认值: False。
+        --save-conf (bool): 是否在文本标签中保存置信度分数。默认值: False。
+        --save-crop (bool): 是否保存裁剪后的检测框图像。默认值: False。
+        --nosave (bool): 是否不保存图像/视频。默认值: False。
+        --classes (list[int] | None): 按类别过滤结果，如 [0, 2, 3]。默认值: None。
+        --agnostic-nms (bool): 是否执行类别无关的NMS。默认值: False。
+        --augment (bool): 是否应用增强推理。默认值: False。
+        --visualize (bool): 是否可视化特征图。默认值: False。
+        --update (bool): 是否更新所有模型。默认值: False。
+        --project (str): 保存结果的目录；结果将保存到"project/name"。默认值: ROOT / "runs/detect"。
+        --name (str): 运行名称；结果将保存到"project/name"。默认值: "exp"。
+        --exist-ok (bool): 是否允许将结果保存到已存在的目录（不自动递增）。默认值: False。
+        --line-thickness (int): 检测框线宽（像素）。默认值: 3。
+        --hide-labels (bool): 是否隐藏检测标签。默认值: False。
+        --hide-conf (bool): 是否隐藏标签上的置信度分数。默认值: False。
+        --half (bool): 是否使用FP16半精度推理。默认值: False。
+        --dnn (bool): 是否使用OpenCV DNN后端进行ONNX推理。默认值: False。
+        --vid-stride (int): 视频输入的帧速率步长。默认值: 1。
 
-    Returns:
-        argparse.Namespace: Parsed command-line arguments for YOLOv3 inference configurations.
+    返回:
+        argparse.Namespace: 包含YOLOv3推理配置的解析后命令行参数对象。
 
-    Examples:
+    示例:
         ```python
         options = parse_opt()
         run(**vars(options))
         ```
     """
+    # 创建命令行参数解析器实例
     parser = argparse.ArgumentParser()
+    # ========== 模型与输入配置 ==========
+    # 添加模型权重参数，支持多个权重路径或Triton服务URL
     parser.add_argument(
         "--weights", nargs="+", type=str, default=ROOT / "yolov3-tiny.pt", help="model path or triton URL"
     )
+    # 添加输入源参数，支持文件/目录/URL/glob模式/屏幕截图/摄像头
     parser.add_argument("--source", type=str, default=ROOT / "data/images", help="file/dir/URL/glob/screen/0(webcam)")
+    # 添加数据集配置文件路径参数
     parser.add_argument("--data", type=str, default=ROOT / "data/coco128.yaml", help="(optional) dataset.yaml path")
+    # 添加推理尺寸参数，支持简写形式 --img 和 --img-size，接受1个或2个整数
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
+    
+    # ========== 推理阈值配置 ==========
+    # 添加置信度阈值参数，过滤低置信度检测结果
     parser.add_argument("--conf-thres", type=float, default=0.25, help="confidence threshold")
+    # 添加NMS的IoU阈值参数，控制非极大值抑制的严格程度
     parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")
+    # 添加单图最大检测数量参数，限制每张图的检测框数量
     parser.add_argument("--max-det", type=int, default=1000, help="maximum detections per image")
+    
+    # ========== 设备配置 ==========
+    # 添加CUDA设备选择参数，支持多GPU或CPU
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
+    # ========== 结果输出控制 ==========
+    # 添加实时显示结果参数
     parser.add_argument("--view-img", action="store_true", help="show results")
+    # 添加保存检测结果到txt文件参数
     parser.add_argument("--save-txt", action="store_true", help="save results to *.txt")
+    # 添加在txt标签中保存置信度参数
     parser.add_argument("--save-conf", action="store_true", help="save confidences in --save-txt labels")
+    # 添加保存裁剪后的检测框图像参数
     parser.add_argument("--save-crop", action="store_true", help="save cropped prediction boxes")
+    # 添加不保存图像/视频参数
     parser.add_argument("--nosave", action="store_true", help="do not save images/videos")
+    
+    # ========== 检测结果过滤 ==========
+    # 添加按类别索引过滤参数，支持多个类别
     parser.add_argument("--classes", nargs="+", type=int, help="filter by class: --classes 0, or --classes 0 2 3")
+    # 添加类别无关NMS参数，合并不同类别的重叠检测框
     parser.add_argument("--agnostic-nms", action="store_true", help="class-agnostic NMS")
+    # ========== 推理增强选项 ==========
+    # 添加测试时数据增强参数，提升检测鲁棒性
     parser.add_argument("--augment", action="store_true", help="augmented inference")
+    # 添加特征图可视化参数
     parser.add_argument("--visualize", action="store_true", help="visualize features")
+    # 添加模型自动更新参数
     parser.add_argument("--update", action="store_true", help="update all models")
+    
+    # ========== 结果保存路径配置 ==========
+    # 添加结果保存项目目录参数
     parser.add_argument("--project", default=ROOT / "runs/detect", help="save results to project/name")
+    # 添加运行名称参数，用于区分不同实验结果
     parser.add_argument("--name", default="exp", help="save results to project/name")
+    # 添加允许覆盖已存在目录参数
     parser.add_argument("--exist-ok", action="store_true", help="existing project/name ok, do not increment")
+    
+    # ========== 可视化配置 ==========
+    # 添加检测框线宽参数
     parser.add_argument("--line-thickness", default=3, type=int, help="bounding box thickness (pixels)")
+    # 添加隐藏标签参数
     parser.add_argument("--hide-labels", default=False, action="store_true", help="hide labels")
+    # 添加隐藏置信度参数
     parser.add_argument("--hide-conf", default=False, action="store_true", help="hide confidences")
+    
+    # ========== 推理优化配置 ==========
+    # 添加FP16半精度推理参数，提升推理速度
     parser.add_argument("--half", action="store_true", help="use FP16 half-precision inference")
+    # 添加使用OpenCV DNN后端参数，用于ONNX模型推理
     parser.add_argument("--dnn", action="store_true", help="use OpenCV DNN for ONNX inference")
+    # 添加视频帧率步长参数，控制视频采样间隔
     parser.add_argument("--vid-stride", type=int, default=1, help="video frame-rate stride")
+    # ========== 参数解析与后处理 ==========
+    # 解析命令行参数，返回Namespace对象
     opt = parser.parse_args()
-    opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
+    # 处理imgsz参数：如果只提供一个值，自动扩展为正方形（如[640] → [640, 640]）
+    opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1
+    # 打印所有解析后的参数配置
     print_args(vars(opt))
+    # 返回包含所有配置参数的Namespace对象
     return opt
 
 

@@ -13,22 +13,41 @@ from utils.downloads import attempt_download
 
 class Sum(nn.Module):
     """Computes the weighted or unweighted sum of multiple input layers per https://arxiv.org/abs/1911.09070."""
+    """计算多个输入层的加权或非加权和，参考论文 https://arxiv.org/abs/1911.09070。"""
 
     def __init__(self, n, weight=False):  # n: number of inputs
         """Initializes a module to compute weighted/unweighted sum of n inputs, with optional learning weights.
 
         https://arxiv.org/abs/1911.09070
         """
+        """初始化一个模块，用于计算 n 个输入的加权/非加权和，并可选择学习权重。
+
+        论文链接：https://arxiv.org/abs/1911.09070
+        参数:
+            n (int): 输入张量的个数
+            weight (bool): 是否使用可学习的加权和，默认 False 表示直接求和
+        """
         super().__init__()
+        # 是否应用权重标志
         self.weight = weight  # apply weights boolean
+        # 迭代对象，用于遍历除第一个输入之外的其余输入
         self.iter = range(n - 1)  # iter object
         if weight:
+            # 可学习的权重参数，初始值为负的等差数列，经过 sigmoid 变换后会限制在 [0,2] 范围内
             self.w = nn.Parameter(-torch.arange(1.0, n) / 2, requires_grad=True)  # layer weights
 
     def forward(self, x):
         """Performs forward pass, blending `x` elements with optional learnable weights.
 
         See https://arxiv.org/abs/1911.09070 for more.
+        """
+        """执行前向传播，将 x 中的元素加权或直接相加。
+
+        论文参考：https://arxiv.org/abs/1911.09070
+        参数:
+            x (list of torch.Tensor): 输入张量列表
+        返回:
+            torch.Tensor: 加权或非加权求和后的张量
         """
         y = x[0]  # no weight
         if self.weight:
