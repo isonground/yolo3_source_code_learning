@@ -26,7 +26,7 @@ ultralytics>=8.4.47          # YOLO framework library (models, training, utils)
 
 # Plotting --------------------------------------------------------------------
 pandas>=1.1.4                # Data handling and manipulation
-seaborn>=0.11.0              # Statistical data visualization (confusion matrix, etc.)
+seaborn>=0.13.2              # Statistical data visualization (confusion matrix, etc.)
 
 # Export (optional) -----------------------------------------------------------
 # coremltools>=6.0           # Apple CoreML export support
