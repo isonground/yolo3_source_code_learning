@@ -13,6 +13,7 @@ from utils.downloads import attempt_download
 
 class Sum(nn.Module):
     """Computes the weighted or unweighted sum of multiple input layers per https://arxiv.org/abs/1911.09070."""
+
     """计算多个输入层的加权或非加权和，参考论文 https://arxiv.org/abs/1911.09070。"""
 
     def __init__(self, n, weight=False):  # n: number of inputs
