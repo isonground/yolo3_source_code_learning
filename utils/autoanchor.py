@@ -33,8 +33,7 @@ def check_anchors(dataset, model, thr=4.0, imgsz=640):
     wh = torch.tensor(np.concatenate([l[:, 3:5] * s for s, l in zip(shapes * scale, dataset.labels)])).float()  # wh
 
     def metric(k):  # compute metric
-        """Computes and returns best possible recall (bpr) and anchors above threshold (aat) metrics for given anchors.
-        """
+        """Computes and returns best possible recall (bpr) and anchors above threshold (aat) metrics for given anchors."""
         r = wh[:, None] / k[None]
         x = torch.min(r, 1 / r).min(2)[0]  # ratio metric
         best = x.max(1)[0]  # best_x

@@ -286,7 +286,7 @@ def run(
 
 
 def parse_opt():
-    """解析并返回运行YOLOv3模型检测所需的命令行参数。
+    """解析并返回运行YOLOv3模型检测所需的命令行参数。.
 
     参数说明:
         --weights (list[str]): 模型权重路径或Triton服务器URL。默认值: ROOT / "yolov3-tiny.pt"。
@@ -339,7 +339,7 @@ def parse_opt():
     parser.add_argument("--data", type=str, default=ROOT / "data/coco128.yaml", help="(optional) dataset.yaml path")
     # 添加推理尺寸参数，支持简写形式 --img 和 --img-size，接受1个或2个整数
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
-    
+
     # ========== 推理阈值配置 ==========
     # 添加置信度阈值参数，过滤低置信度检测结果
     parser.add_argument("--conf-thres", type=float, default=0.25, help="confidence threshold")
@@ -347,7 +347,7 @@ def parse_opt():
     parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")
     # 添加单图最大检测数量参数，限制每张图的检测框数量
     parser.add_argument("--max-det", type=int, default=1000, help="maximum detections per image")
-    
+
     # ========== 设备配置 ==========
     # 添加CUDA设备选择参数，支持多GPU或CPU
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
@@ -362,7 +362,7 @@ def parse_opt():
     parser.add_argument("--save-crop", action="store_true", help="save cropped prediction boxes")
     # 添加不保存图像/视频参数
     parser.add_argument("--nosave", action="store_true", help="do not save images/videos")
-    
+
     # ========== 检测结果过滤 ==========
     # 添加按类别索引过滤参数，支持多个类别
     parser.add_argument("--classes", nargs="+", type=int, help="filter by class: --classes 0, or --classes 0 2 3")
@@ -375,7 +375,7 @@ def parse_opt():
     parser.add_argument("--visualize", action="store_true", help="visualize features")
     # 添加模型自动更新参数
     parser.add_argument("--update", action="store_true", help="update all models")
-    
+
     # ========== 结果保存路径配置 ==========
     # 添加结果保存项目目录参数
     parser.add_argument("--project", default=ROOT / "runs/detect", help="save results to project/name")
@@ -383,7 +383,7 @@ def parse_opt():
     parser.add_argument("--name", default="exp", help="save results to project/name")
     # 添加允许覆盖已存在目录参数
     parser.add_argument("--exist-ok", action="store_true", help="existing project/name ok, do not increment")
-    
+
     # ========== 可视化配置 ==========
     # 添加检测框线宽参数
     parser.add_argument("--line-thickness", default=3, type=int, help="bounding box thickness (pixels)")
@@ -391,7 +391,7 @@ def parse_opt():
     parser.add_argument("--hide-labels", default=False, action="store_true", help="hide labels")
     # 添加隐藏置信度参数
     parser.add_argument("--hide-conf", default=False, action="store_true", help="hide confidences")
-    
+
     # ========== 推理优化配置 ==========
     # 添加FP16半精度推理参数，提升推理速度
     parser.add_argument("--half", action="store_true", help="use FP16 half-precision inference")
