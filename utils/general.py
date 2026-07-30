@@ -180,8 +180,7 @@ class Profile(contextlib.ContextDecorator):
     """Profiles code execution time, usable as a context manager or decorator for performance monitoring."""
 
     def __init__(self, t=0.0):
-        """Initializes a profiling context for YOLOv3 with optional timing threshold `t` and checks CUDA availability.
-        """
+        """Initializes a profiling context for YOLOv3 with optional timing threshold `t` and checks CUDA availability."""
         self.t = t
         self.cuda = torch.cuda.is_available()
 
@@ -208,8 +207,7 @@ class Timeout(contextlib.ContextDecorator):
     """Enforces a timeout on code execution, raising TimeoutError on expiry."""
 
     def __init__(self, seconds, *, timeout_msg="", suppress_timeout_errors=True):
-        """Initializes a timeout context/decorator with specified duration, custom message, and error handling option.
-        """
+        """Initializes a timeout context/decorator with specified duration, custom message, and error handling option."""
         self.seconds = int(seconds)
         self.timeout_message = timeout_msg
         self.suppress = bool(suppress_timeout_errors)
@@ -300,8 +298,7 @@ def get_default_args(func):
 
 
 def get_latest_run(search_dir="."):
-    """Returns path to the most recent 'last.pt' file within 'search_dir' for resuming, or an empty string if not found.
-    """
+    """Returns path to the most recent 'last.pt' file within 'search_dir' for resuming, or an empty string if not found."""
     last_list = glob.glob(f"{search_dir}/**/last*.pt", recursive=True)
     return max(last_list, key=os.path.getctime) if last_list else ""
 
@@ -331,8 +328,7 @@ def file_size(path):
 
 
 def check_online():
-    """Checks internet connectivity by attempting to connect to "1.1.1.1" on port 443 twice; returns True if successful.
-    """
+    """Checks internet connectivity by attempting to connect to "1.1.1.1" on port 443 twice; returns True if successful."""
     import socket
 
     def run_once():
@@ -530,7 +526,7 @@ def check_dataset(data, autodownload=True):
         assert k in data, emojis(f"data.yaml '{k}:' field missing ❌")
     if isinstance(data["names"], (list, tuple)):  # old array format
         data["names"] = dict(enumerate(data["names"]))  # convert to dict
-    assert all(isinstance(k, int) for k in data["names"].keys()), "data.yaml names keys must be integers, i.e. 2: car"
+    assert all(isinstance(k, int) for k in data["names"]), "data.yaml names keys must be integers, i.e. 2: car"
     data["nc"] = len(data["names"])
 
     # Resolve paths
@@ -638,12 +634,10 @@ def url2file(url):
 
 
 def download(url, dir=".", unzip=True, delete=True, curl=False, threads=1, retry=3):
-    """Downloads files from URLs into a specified directory, optionally unzips, and supports multithreading and retries.
-    """
+    """Downloads files from URLs into a specified directory, optionally unzips, and supports multithreading and retries."""
 
     def download_one(url, dir):
-        """Downloads a file from a URL into the specified directory, supporting retries and using curl or torch methods.
-        """
+        """Downloads a file from a URL into the specified directory, supporting retries and using curl or torch methods."""
         success = True
         if os.path.isfile(url):
             f = Path(url)  # filename
@@ -1149,7 +1143,7 @@ def print_mutation(keys, results, hyp, save_dir, bucket, prefix=colorstr("evolve
     with open(evolve_yaml, "w") as f:
         data = pd.read_csv(evolve_csv, skipinitialspace=True)
         data = data.rename(columns=lambda x: x.strip())  # strip keys
-        i = np.argmax(fitness(data.values[:, :4]))  #
+        i = np.argmax(fitness(data.values[:, :4]))
         generations = len(data)
         f.write(
             "# YOLOv3 Hyperparameter Evolution Results\n"
@@ -1227,7 +1221,7 @@ def increment_path(path, exist_ok=False, sep="", mkdir=False):
         # Method 1
         for n in range(2, 9999):
             p = f"{path}{sep}{n}{suffix}"  # increment path
-            if not os.path.exists(p):  #
+            if not os.path.exists(p):
                 break
         path = Path(p)
 
