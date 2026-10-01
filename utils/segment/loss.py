@@ -1,8 +1,8 @@
 # Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
 from ..general import xywh2xyxy
 from ..loss import FocalLoss, smooth_BCE
@@ -124,8 +124,7 @@ class ComputeLoss:
         return (crop_mask(loss, xyxy).mean(dim=(1, 2)) / area).mean()
 
     def build_targets(self, p, targets):
-        """Prepares targets for loss computation by appending anchor indices; supports optional target overlap handling.
-        """
+        """Prepares targets for loss computation by appending anchor indices; supports optional target overlap handling."""
         na, nt = self.na, targets.shape[0]  # number of anchors, targets
         tcls, tbox, indices, anch, tidxs, xywhn = [], [], [], [], [], []
         gain = torch.ones(8, device=self.device)  # normalized to gridspace gain
