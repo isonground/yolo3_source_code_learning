@@ -24,7 +24,6 @@ class TryExcept(contextlib.ContextDecorator):
         """Begin exception-handling block, optionally customizing exception message when used with TryExcept context
         manager.
         """
-        pass
 
     def __exit__(self, exc_type, value, traceback):
         """Ends exception-handling block, optionally prints custom message with exception, suppressing exceptions within
