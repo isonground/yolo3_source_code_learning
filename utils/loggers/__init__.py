@@ -25,7 +25,7 @@ except ImportError:
         """Imports TensorBoard's SummaryWriter for logging, with a fallback returning None if TensorBoard is not
         installed.
         """
-        return None  # None = SummaryWriter(str)
+        return  # None = SummaryWriter(str)
 
 
 try:
@@ -66,8 +66,7 @@ class Loggers:
     """Manages logging for training and validation using TensorBoard, Weights & Biases, ClearML, and Comet ML."""
 
     def __init__(self, save_dir=None, weights=None, opt=None, hyp=None, logger=None, include=LOGGERS):
-        """Initializes YOLOv3 logging with directory, weights, options, hyperparameters, and includes specified loggers.
-        """
+        """Initializes YOLOv3 logging with directory, weights, options, hyperparameters, and includes specified loggers."""
         self.save_dir = save_dir
         self.weights = weights
         self.opt = opt
@@ -248,9 +247,9 @@ class Loggers:
         if self.csv:
             file = self.save_dir / "results.csv"
             n = len(x) + 1  # number of cols
-            s = "" if file.exists() else (("%20s," * n % tuple(["epoch", *self.keys])).rstrip(",") + "\n")  # add header
+            s = "" if file.exists() else (("%20s," * n % ("epoch", *self.keys)).rstrip(",") + "\n")  # add header
             with open(file, "a") as f:
-                f.write(s + ("%20.5g," * n % tuple([epoch, *vals])).rstrip(",") + "\n")
+                f.write(s + ("%20.5g," * n % (epoch, *vals)).rstrip(",") + "\n")
 
         if self.tb:
             for k, v in x.items():
@@ -276,8 +275,7 @@ class Loggers:
             self.comet_logger.on_fit_epoch_end(x, epoch=epoch)
 
     def on_model_save(self, last, epoch, final_epoch, best_fitness, fi):
-        """Logs model to WandB/ClearML, considering save_period and if not final_epoch, also notes if best model so far.
-        """
+        """Logs model to WandB/ClearML, considering save_period and if not final_epoch, also notes if best model so far."""
         if (epoch + 1) % self.opt.save_period == 0 and not final_epoch and self.opt.save_period != -1:
             if self.wandb:
                 self.wandb.log_model(last.parent, self.opt, epoch, fi, best_model=best_fitness == fi)
@@ -368,9 +366,9 @@ class GenericLogger:
         if self.csv:
             keys, vals = list(metrics.keys()), list(metrics.values())
             n = len(metrics) + 1  # number of cols
-            s = "" if self.csv.exists() else (("%23s," * n % tuple(["epoch", *keys])).rstrip(",") + "\n")  # header
+            s = "" if self.csv.exists() else (("%23s," * n % ("epoch", *keys)).rstrip(",") + "\n")  # header
             with open(self.csv, "a") as f:
-                f.write(s + ("%23.5g," * n % tuple([epoch, *vals])).rstrip(",") + "\n")
+                f.write(s + ("%23.5g," * n % (epoch, *vals)).rstrip(",") + "\n")
 
         if self.tb:
             for k, v in metrics.items():
@@ -425,8 +423,7 @@ def log_tensorboard_graph(tb, model, imgsz=(640, 640)):
 
 
 def web_project_name(project):
-    """Converts local project name to a web-friendly format by adding a suffix based on its type (classify or segment).
-    """
+    """Converts local project name to a web-friendly format by adding a suffix based on its type (classify or segment)."""
     if not project.startswith("runs/train"):
         return project
     suffix = "-Classify" if project.endswith("-cls") else "-Segment" if project.endswith("-seg") else ""
