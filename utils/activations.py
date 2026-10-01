@@ -2,8 +2,8 @@
 """Activation functions."""
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
 
 class SiLU(nn.Module):
@@ -100,8 +100,7 @@ class AconC(nn.Module):
         self.beta = nn.Parameter(torch.ones(1, c1, 1, 1))
 
     def forward(self, x):
-        """Applies a parametric activation function to tensor x; see https://arxiv.org/pdf/2009.04759.pdf for details.
-        """
+        """Applies a parametric activation function to tensor x; see https://arxiv.org/pdf/2009.04759.pdf for details."""
         dpx = (self.p1 - self.p2) * x
         return dpx * torch.sigmoid(self.beta * dpx) + self.p2 * x
 
