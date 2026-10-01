@@ -18,8 +18,8 @@ import numpy as np
 import pandas as pd
 import requests
 import torch
-import torch.nn as nn
 from PIL import Image
+from torch import nn
 from torch.cuda import amp
 from ultralytics.utils.plotting import Annotator, colors, save_one_box
 
@@ -161,8 +161,7 @@ class Bottleneck(nn.Module):
         self.add = shortcut and c1 == c2
 
     def forward(self, x):
-        """Executes forward pass, performing convolutional ops and optional shortcut addition; expects input tensor x.
-        """
+        """Executes forward pass, performing convolutional ops and optional shortcut addition; expects input tensor x."""
         return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
 
 
@@ -184,8 +183,7 @@ class BottleneckCSP(nn.Module):
         self.m = nn.Sequential(*(Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)))
 
     def forward(self, x):
-        """Processes input through layers, combining outputs with activation and normalization for feature extraction.
-        """
+        """Processes input through layers, combining outputs with activation and normalization for feature extraction."""
         y1 = self.cv3(self.m(self.cv1(x)))
         y2 = self.cv2(x)
         return self.cv4(self.act(self.bn(torch.cat((y1, y2), 1))))
@@ -213,8 +211,7 @@ class C3(nn.Module):
     """Implements a CSP Bottleneck with 3 convolutions, optional shortcuts, group convolutions, and expansion factor."""
 
     def __init__(self, c1, c2, n=1, shortcut=True, g=1, e=0.5):  # ch_in, ch_out, number, shortcut, groups, expansion
-        """Initializes CSP Bottleneck with 3 convolutions, optional shortcuts, group convolutions, and expansion factor.
-        """
+        """Initializes CSP Bottleneck with 3 convolutions, optional shortcuts, group convolutions, and expansion factor."""
         super().__init__()
         c_ = int(c2 * e)  # hidden channels
         self.cv1 = Conv(c1, c_, 1, 1)
@@ -602,11 +599,10 @@ class DetectMultiBackend(nn.Module):
             input_details = interpreter.get_input_details()  # inputs
             output_details = interpreter.get_output_details()  # outputs
             # load metadata
-            with contextlib.suppress(zipfile.BadZipFile):
-                with zipfile.ZipFile(w, "r") as model:
-                    meta_file = model.namelist()[0]
-                    meta = ast.literal_eval(model.read(meta_file).decode("utf-8"))
-                    stride, names = int(meta["stride"]), meta["names"]
+            with contextlib.suppress(zipfile.BadZipFile), zipfile.ZipFile(w, "r") as model:
+                meta_file = model.namelist()[0]
+                meta = ast.literal_eval(model.read(meta_file).decode("utf-8"))
+                stride, names = int(meta["stride"]), meta["names"]
         elif tfjs:  # TF.js
             raise NotImplementedError("ERROR: YOLOv3 TF.js inference is not supported")
         elif paddle:  # PaddlePaddle
@@ -734,7 +730,7 @@ class DetectMultiBackend(nn.Module):
         warmup_types = self.pt, self.jit, self.onnx, self.engine, self.saved_model, self.pb, self.triton
         if any(warmup_types) and (self.device.type != "cpu" or self.triton):
             im = torch.empty(*imgsz, dtype=torch.half if self.fp16 else torch.float, device=self.device)  # input
-            for _ in range(2 if self.jit else 1):  #
+            for _ in range(2 if self.jit else 1):
                 self.forward(im)  # warmup
 
     @staticmethod
