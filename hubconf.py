@@ -110,8 +110,8 @@ def custom(path="path/to/model.pt", autoshape=True, _verbose=True, device=None):
 
     Raises:
         Exception: If the model loading fails due to invalid path or incompatible model state, with helpful suggestions
-            including a reference to the troubleshooting page:
-            https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading
+            including a reference to the troubleshooting
+            page: https://docs.ultralytics.com/yolov5/tutorials/pytorch_hub_model_loading
 
     Examples:
         ```python
@@ -369,9 +369,9 @@ def yolov5l6(pretrained=True, channels=3, classes=80, autoshape=True, _verbose=T
         autoshape (bool, optional): If True, applies the YOLOv5 .autoshape() wrapper to the model for automatic shape
             inference. Default is True.
         _verbose (bool, optional): If True, prints all information to the screen. Default is True.
-        device (str | torch.device | None, optional): Device to use for the model parameters, e.g., 'cpu', 'cuda', or
-            a specific GPU like 'cuda:0'. Default is None, which means the best available device will be selected
-            automatically.
+        device (str | torch.device | None, optional): Device to use for the model parameters, e.g., 'cpu', 'cuda', or a
+            specific GPU like 'cuda:0'. Default is None, which means the best available device will be
+            selected automatically.
 
     Returns:
         yolov5.models.yolo.DetectionModel: YOLOv5l6 model initialized with defined custom configurations.

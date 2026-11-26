@@ -166,8 +166,7 @@ def export_formats():
 
     Returns:
         list: A list of lists where each sublist contains information about a specific export format. Each sublist
-            includes
-            the following elements:
+            includes the following elements:
             - str: The name of the format.
             - str: The command-line argument for including this format.
             - str: The file suffix used for this format.
