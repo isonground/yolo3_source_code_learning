@@ -66,7 +66,7 @@ RANK = int(os.getenv("RANK", -1))
 PIN_MEMORY = str(os.getenv("PIN_MEMORY", True)).lower() == "true"  # global pin_memory for dataloaders
 
 # Get orientation exif tag
-for orientation in ExifTags.TAGS.keys():
+for orientation in ExifTags.TAGS:
     if ExifTags.TAGS[orientation] == "Orientation":
         break
 
@@ -484,8 +484,7 @@ class LoadStreams:
 
 
 def img2label_paths(img_paths):
-    """Converts image paths to corresponding label paths by replacing `/images/` with `/labels/` and `.jpg` with `.txt`.
-    """
+    """Converts image paths to corresponding label paths by replacing `/images/` with `/labels/` and `.jpg` with `.txt`."""
     sa, sb = f"{os.sep}images{os.sep}", f"{os.sep}labels{os.sep}"  # /images/, /labels/ substrings
     return [sb.join(x.rsplit(sa, 1)).rsplit(".", 1)[0] + ".txt" for x in img_paths]
 
@@ -825,8 +824,7 @@ class LoadImagesAndLabels(Dataset):
             np.save(f.as_posix(), cv2.imread(self.im_files[i]))
 
     def load_mosaic(self, index):
-        """Loads 4 images into a mosaic for YOLOv3 training, enhancing detection capabilities through data augmentation.
-        """
+        """Loads 4 images into a mosaic for YOLOv3 training, enhancing detection capabilities through data augmentation."""
         labels4, segments4 = [], []
         s = self.img_size
         yc, xc = (int(random.uniform(-x, 2 * s + x)) for x in self.mosaic_border)  # mosaic center x, y

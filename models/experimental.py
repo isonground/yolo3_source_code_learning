@@ -5,7 +5,7 @@ import math
 
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 from ultralytics.utils.patches import torch_load
 
 from utils.downloads import attempt_download
@@ -13,6 +13,7 @@ from utils.downloads import attempt_download
 
 class Sum(nn.Module):
     """Computes the weighted or unweighted sum of multiple input layers per https://arxiv.org/abs/1911.09070."""
+
     """计算多个输入层的加权或非加权和，参考论文 https://arxiv.org/abs/1911.09070。"""
 
     def __init__(self, n, weight=False):  # n: number of inputs
@@ -64,8 +65,7 @@ class MixConv2d(nn.Module):
     """Implements mixed depth-wise convolutions for efficient neural networks; see https://arxiv.org/abs/1907.09595."""
 
     def __init__(self, c1, c2, k=(1, 3), s=1, equal_ch=True):  # ch_in, ch_out, kernel, stride, ch_strategy
-        """Initializes MixConv2d with mixed depth-wise convolution layers; details at https://arxiv.org/abs/1907.09595.
-        """
+        """Initializes MixConv2d with mixed depth-wise convolution layers; details at https://arxiv.org/abs/1907.09595."""
         super().__init__()
         n = len(k)  # number of convolutions
         if equal_ch:  # equal c_ per group
@@ -132,7 +132,7 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
             m.inplace = inplace  # torch 1.7.0 compatibility
             if t is Detect and not isinstance(m.anchor_grid, list):
                 delattr(m, "anchor_grid")
-                setattr(m, "anchor_grid", [torch.zeros(1)] * m.nl)
+                m.anchor_grid = [torch.zeros(1)] * m.nl
         elif t is nn.Upsample and not hasattr(m, "recompute_scale_factor"):
             m.recompute_scale_factor = None  # torch 1.11.0 compatibility
 
